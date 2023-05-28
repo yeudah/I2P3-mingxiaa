@@ -1,0 +1,6 @@
+.vscode/
+build/
+gamelog.txt
+action
+state
+~$*
