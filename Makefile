@@ -32,18 +32,18 @@ $(BUILD_DIR):
 # build target
 ifeq ($(OS), Windows_NT)
 $(TARGET_PLAYER): % : $(SOURCES_DIR)/player/%.cpp
-	$(CXX) $(CXXFLAGS) -o $(BUILD_DIR)/player_$@.exe $(POLICY_DIR)/$@.cpp $< 
+	$(CXX) $(CXXFLAGS) -o $(BUILD_DIR)/player_$@.exe $(STATE_SOURCE) $(POLICY_DIR)/$@.cpp $< 
 $(TARGET_MAIN): % : $(SOURCES_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) -o $(BUILD_DIR)/$@.exe $(STATE_SOURCE) $< 
+	$(CXX) $(CXXFLAGS) -o $(BUILD_DIR)/$@.exe $< 
 $(TARGET_OTHER): %: $(SOURCES_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -o $(BUILD_DIR)/$@.exe $(STATE_SOURCE) $(POLICY_DIR)/*.cpp $<
 $(TARGET_UNITTEST): %: $(UNITTEST_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -o $(UNITTEST_DIR)/build/$@.exe $(STATE_SOURCE) $(POLICY_DIR)/*.cpp $<
 else
 $(TARGET_PLAYER): % : $(SOURCES_DIR)/player/%.cpp
-	$(CXX) $(CXXFLAGS) -o $(BUILD_DIR)/player_$@ $(POLICY_DIR)/$@.cpp $< 
+	$(CXX) $(CXXFLAGS) -o $(BUILD_DIR)/player_$@ $(STATE_SOURCE) $(POLICY_DIR)/$@.cpp $< 
 $(TARGET_MAIN): % : $(SOURCES_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) -o $(BUILD_DIR)/$@ $(STATE_SOURCE) $< 
+	$(CXX) $(CXXFLAGS) -o $(BUILD_DIR)/$@ $< 
 $(TARGET_OTHER): %: $(SOURCES_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -o $(BUILD_DIR)/$@ $(STATE_SOURCE) $(POLICY_DIR)/*.cpp $<
 $(TARGET_UNITTEST): %: $(UNITTEST_DIR)/%.cpp
