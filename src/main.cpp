@@ -260,10 +260,27 @@ void State::get_legal_actions(){
 }
 
 
-const char piece_table[2][7][5] = {
-  {" ", "♟", "♜", "♞", "♝", "♛", "♚"},
-  {" ", "♙", "♖", "♘", "♗", "♕", "♔"},
-};
+void make_seperate_line(std::stringstream& ss){
+  ss << "├";
+  for(int w=0; w<BOARD_W; w+=1){
+    for(int h=0; h<PIECE_STR_LEN; h+=1)
+      ss << "─";
+    ss << "──┼";
+  }
+  ss << "─┼───┤\n";
+}
+void add_axis(std::stringstream& ss){
+  ss << "│";
+  for(int w=0; w<BOARD_W; w+=1){
+    for(int h=0; h<PIECE_STR_LEN/2; h+=1)
+      ss << " ";
+    ss << " " << w << " ";
+    for(int h=0; h<PIECE_STR_LEN/2 - (PIECE_STR_LEN+1)%2; h+=1)
+      ss << " ";
+    ss << "│";
+  }
+  ss << " │   │\n";
+}
 /**
  * @brief encode the output for command line output
  * 
@@ -272,24 +289,38 @@ const char piece_table[2][7][5] = {
 std::string State::encode_output(){
   std::stringstream ss;
   int now_piece;
-  ss << "┌───┬───┬───┬───┬───┬─┬───┐\n";
+  ss << "┌";
+  for(int w=0; w<BOARD_W; w+=1){
+    for(int h=0; h<PIECE_STR_LEN; h+=1)
+      ss << "─";
+    ss << "──┬";
+  }
+  ss << "─┬───┐\n";
+  
   for(int i=0; i<BOARD_H; i+=1){
     for(int j=0; j<BOARD_W; j+=1){
       ss << "│ ";
       if((now_piece = this->board.board[0][i][j])){
-        ss << std::string(piece_table[0][now_piece]) << " ";
+        ss << std::string(PIECE_TABLE[0][now_piece]) << " ";
       }else if((now_piece = this->board.board[1][i][j])){
-        ss << std::string(piece_table[1][now_piece]) << " ";
+        ss << std::string(PIECE_TABLE[1][now_piece]) << " ";
       }else{
-        ss << "  ";
+        ss << std::string(PIECE_TABLE[0][0]) << " ";
       }
     }
     ss << "│ │ " << i << " │\n";
-    ss << "├───┼───┼───┼───┼───┼─┼───┤\n";
+    make_seperate_line(ss);
   }
-  ss << "├───┼───┼───┼───┼───┼─┼───┤\n";
-  ss << "│ 0 │ 1 │ 2 │ 3 │ 4 │ │   │\n";
-  ss << "└───┴───┴───┴───┴───┴─┴───┘";
+  make_seperate_line(ss);
+  add_axis(ss);
+  
+  ss << "└";
+  for(int w=0; w<BOARD_W; w+=1){
+    for(int h=0; h<PIECE_STR_LEN; h+=1)
+      ss << "─";
+    ss << "──┴";
+  }
+  ss << "─┴───┘\n";
   return ss.str();
 }
 
