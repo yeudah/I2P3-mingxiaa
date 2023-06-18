@@ -12,8 +12,27 @@
  * @return int 
  */
 int State::evaluate(){
-  // [TODO] design your own evaluation function
-  return 0;
+  int scores[7] = {0, 2, 6, 7, 8, 20, 100};  // Scores for pieces: pawn, rook, bishop, knight, queen, king
+
+  int score = 0;
+std::cout<<" NEW!"<<std::endl;
+  // Iterate through the board and calculate the score for each piece
+  for (int i = 0; i < BOARD_H; i++) {
+    for (int j = 0; j < BOARD_W; j++) {
+      int piece = this->board.board[this->player][i][j];
+     // std::cout<<this->player<<" my piece "<<piece<<std::endl;
+      score += scores[piece];
+     //std::cout<<" score "<<score<<std::endl;
+
+      int opponentPiece = this->board.board[1 - this->player][i][j];
+      //std::cout<<1-this->player<<" opponent piece "<<opponentPiece<<std::endl;
+      score -= scores[opponentPiece];
+      //std::cout<<" score "<<score<<std::endl;
+    }
+  }
+
+  return score;
+
 }
 
 
@@ -86,7 +105,7 @@ void State::get_legal_actions(){
   for(int i=0; i<BOARD_H; i+=1){
     for(int j=0; j<BOARD_W; j+=1){
       if((now_piece=self_board[i][j])){
-        // std::cout << this->player << "," << now_piece << ' ';
+        std::cout << this->player << "," << now_piece << "coor ("<<i<<","<<j<<")"<<" - ";
         switch (now_piece){
           case 1: //pawn
             if(this->player && i<BOARD_H-1){
