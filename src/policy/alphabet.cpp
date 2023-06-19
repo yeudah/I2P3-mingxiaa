@@ -55,6 +55,7 @@ Move Alpha::get_move(State *state, int depth){
   for(auto act:state->legal_actions){
     auto nextstate=state->next_state(act);
     store=alphaa(nextstate,depth,true,a,b);
+    a=std::max(a, store);
     if(store>largest){
         best_action=act;
         largest=store;
