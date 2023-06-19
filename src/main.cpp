@@ -255,7 +255,7 @@ void State::get_legal_actions(){
       }
     }
   }
-  std::cout << "\n";
+  //std::cout << "\n";
   this->legal_actions = all_actions;
 }
 
@@ -418,7 +418,7 @@ int main(int argc, char** argv) {
     log << step << " step" << std::endl;
     data = game.encode_output(); // output the graphics
     //DEBUGG
-    std::cout << "the data"<<std::endl<<data << std::endl;
+    //std::cout << "the data"<<std::endl<<data << std::endl;
     log << data << std::endl;
     
     data = game.encode_state();

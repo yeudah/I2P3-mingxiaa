@@ -14,7 +14,8 @@ int make_node(State* state, int depth, bool maximizingPlayer, int *index){
     if (depth == 0 || state->legal_actions.empty()){
         return state->evaluate();
     }
-    
+    int indexx=0;
+    int store;
     if (maximizingPlayer){
         int value = INT_MIN;
        
@@ -22,15 +23,15 @@ int make_node(State* state, int depth, bool maximizingPlayer, int *index){
         for (auto &it : state->legal_actions){
             State* potential_state = state->next_state(it);
 
-            int val = make_node(potential_state, depth - 1, false,index);
+            int val = make_node(potential_state, depth - 1, false,&indexx);
             if (value < val){
         
                 value = val;
-               *index=a;
+                store = a;
             }
             a++;
         }
-        
+        *index=store;
         return value;
     }
     else {
@@ -40,16 +41,16 @@ int make_node(State* state, int depth, bool maximizingPlayer, int *index){
         for (auto &it :state->legal_actions){
             State* potential_state = state->next_state(it);
             
-            int val = make_node(potential_state, depth - 1, true,index);
+            int val = make_node(potential_state, depth - 1, true,&indexx);
             if (value > val){
               
                 value = val;
-                *index=a;
+                store=a;
 
             }
             a++;
         }
-      
+        *index=store;
         return value;
     }
 }
