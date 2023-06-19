@@ -11,29 +11,37 @@
  * 
  * @return int 
  */
+#include <iostream>
+#include <sstream>
+#include <cstdint>
+
+#include "./state.hpp"
+#include "../config.hpp"
+
+
+/**
+ * @brief evaluate the state
+ * 
+ * @return int 
+ */
 int State::evaluate(){
-  int scores[7] = {0, 1, 3, 3, 5, 9, 90};  // Scores for pieces: pawn, rook, bishop, knight, queen, king
+  int scores[7] = {0, 2, 6, 7, 8, 20, 100};  // Scores for pieces: pawn, rook, bishop, knight, queen, king
 
   int score = 0;
-//std::cout<<" NEW!"<<std::endl;
-  // Iterate through the board and calculate the score for each piece
+
   for (int i = 0; i < BOARD_H; i++) {
     for (int j = 0; j < BOARD_W; j++) {
       int piece = this->board.board[this->player][i][j];
-     // std::cout<<this->player<<" my piece "<<piece<<std::endl;
       score += scores[piece];
-     //std::cout<<" score "<<score<<std::endl;
 
       int opponentPiece = this->board.board[1 - this->player][i][j];
-      //std::cout<<1-this->player<<" opponent piece "<<opponentPiece<<std::endl;
       score -= scores[opponentPiece];
-      //std::cout<<" score "<<score<<std::endl;
     }
   }
-
+  this->score=score;
   return score;
-
 }
+
 
 
 /**
@@ -105,7 +113,7 @@ void State::get_legal_actions(){
   for(int i=0; i<BOARD_H; i+=1){
     for(int j=0; j<BOARD_W; j+=1){
       if((now_piece=self_board[i][j])){
-        //std::cout << this->player << "," << now_piece << "coor ("<<i<<","<<j<<")"<<" - ";
+        // std::cout << this->player << "," << now_piece << ' ';
         switch (now_piece){
           case 1: //pawn
             if(this->player && i<BOARD_H-1){
@@ -226,7 +234,7 @@ void State::get_legal_actions(){
       }
     }
   }
- // std::cout << "\n";
+  std::cout << "\n";
   this->legal_actions = all_actions;
 }
 

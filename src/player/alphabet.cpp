@@ -3,7 +3,7 @@
 
 #include "../config.hpp"
 #include "../state/state.hpp"
-#include "../policy/random.hpp"
+#include "../policy/alphabet.hpp"
 
 
 State* root;
@@ -17,7 +17,7 @@ void read_board(std::ifstream& fin) {
   Board board;
   int player;
   fin >> player;
-
+ 
   for (int pl=0; pl<2; pl++) {
     for (int i=0; i<BOARD_H; i++) {
       for (int j=0; j<BOARD_W; j++) {
@@ -28,7 +28,9 @@ void read_board(std::ifstream& fin) {
       // std::cout << std::endl;
     }
   }
+  
   root = new State(board, player);
+  
   root->get_legal_actions();
 }
 
@@ -39,17 +41,23 @@ void read_board(std::ifstream& fin) {
  * @param fout 
  */
 void write_valid_spot(std::ofstream& fout) {
+
   // Keep updating the output until getting killed.
-  while(true) {
+ while(true){
+  //std::cout<<"bis"<<akubisa<<std::endl;
     // Choose a random spot.
-    auto move = Random::get_move(root, 0);
+    auto move = Alpha::get_move(root, 8);
     fout << move.first.first << " " << move.first.second << " "\
-         << move.second.first << " " << move.second.second;// << std::endl;
+         << move.second.first << " " << move.second.second ;//<< std::endl;
     
     // Remember to flush the output to ensure the last action is written to file.
+     //akubisa++;
     fout.flush();
+   
     break;
-  }
+ }
+  
+
 }
 
 

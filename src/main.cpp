@@ -416,9 +416,8 @@ int main(int argc, char** argv) {
     // Output current state
     std::cout << step << " step" << std::endl;
     log << step << " step" << std::endl;
-    data = game.encode_output(); // output the graphics
-    //DEBUGG
-    //std::cout << "the data"<<std::endl<<data << std::endl;
+    data = game.encode_output();
+    std::cout << data << std::endl;
     log << data << std::endl;
     
     data = game.encode_state();
@@ -434,8 +433,7 @@ int main(int argc, char** argv) {
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     system("cls");
 #else
-//debug
-   // system("clear");
+    //system("clear");
 #endif
     while (true) {
       int x, y, n, m;

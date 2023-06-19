@@ -18,4 +18,3 @@ Move Random::get_move(State *state, int depth){
   auto actions = state->legal_actions;
   return actions[(rand()+depth)%actions.size()];
 }
-

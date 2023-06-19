@@ -41,19 +41,23 @@ void read_board(std::ifstream& fin) {
  * @param fout 
  */
 void write_valid_spot(std::ofstream& fout) {
-  static int a=10;
+
   // Keep updating the output until getting killed.
-  while(true) {
+ while(true){
+  //std::cout<<"bis"<<akubisa<<std::endl;
     // Choose a random spot.
-    auto move = MinMax::get_move(root, 6);
+    auto move = MinMax::get_move(root, 4);
     fout << move.first.first << " " << move.first.second << " "\
-         << move.second.first << " " << move.second.second << std::endl;
+         << move.second.first << " " << move.second.second ;//<< std::endl;
     
     // Remember to flush the output to ensure the last action is written to file.
+     //akubisa++;
     fout.flush();
+   
     break;
-  }
-  if(a>2)a--;
+ }
+  
+
 }
 
 
