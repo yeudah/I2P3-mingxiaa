@@ -46,7 +46,7 @@ void write_valid_spot(std::ofstream& fout) {
  while(true){
   //std::cout<<"bis"<<akubisa<<std::endl;
     // Choose a random spot.
-    auto move = Alpha::get_move(root, 10);
+    auto move = Alpha::get_move(root, 7);
     fout << move.first.first << " " << move.first.second << " "\
          << move.second.first << " " << move.second.second ;//<< std::endl;
     

@@ -12,7 +12,7 @@
 
 int minmaxx(State* state, int depth, bool maximizingPlayer){
 
-    if (depth == 0||state->legal_actions.empty()||state->game_state==WIN){
+    if (depth == 0||state->legal_actions.empty()||state->game_state==WIN||state->game_state==DRAW){
         if(state->score)return state->score;
         return state->evaluate();
     }
