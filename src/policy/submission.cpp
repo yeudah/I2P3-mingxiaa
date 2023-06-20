@@ -5,12 +5,12 @@
 
 
 #include "../state/state.hpp"
-#include "./alphabet.hpp"
+#include "./submission.hpp"
 
 //typedef std::pair<size_t, size_t> Point;
 //typedef std::pair<Point, Point> Move;
 
-int alphaa(State* state, int depth, bool maximizingPlayer, int a,int b){
+int subb(State* state, int depth, bool maximizingPlayer, int a,int b){
 
 
     if (depth == 0||state->game_state==WIN||state->game_state==DRAW||state->legal_actions.empty()){
@@ -21,7 +21,7 @@ int alphaa(State* state, int depth, bool maximizingPlayer, int a,int b){
         int value = INT_MIN;
         for (auto &it : state->legal_actions){
             State* next = state->next_state(it);
-            value = std::max(value,alphaa(next, depth - 1, false, a,b) );
+            value = std::max(value,subb(next, depth - 1, false, a,b) );
             a=std::max(a,value);
             if(a>=b)break;
         }
@@ -31,7 +31,7 @@ int alphaa(State* state, int depth, bool maximizingPlayer, int a,int b){
         int value = INT_MAX;
         for (auto &it :state->legal_actions){
             State* next = state->next_state(it);
-            value = std::min(value,alphaa(next, depth - 1, true,a,b));
+            value = std::min(value,subb(next, depth - 1, true,a,b));
             b=std::min(b,value);
             if(b<=a)break;
         }
@@ -45,7 +45,7 @@ int alphaa(State* state, int depth, bool maximizingPlayer, int a,int b){
  * @param depth You may need this for other policy
  * @return Move 
  */
-Move Alpha::get_move(State *state, int depth){
+Move Sub::get_move(State *state, int depth){
 
   if(!state->legal_actions.size())
     state->get_legal_actions();
@@ -55,7 +55,7 @@ Move Alpha::get_move(State *state, int depth){
 
   for(auto act:state->legal_actions){
     auto nextstate=state->next_state(act);
-    store=alphaa(nextstate,depth,true,a,b);
+    store=subb(nextstate,depth,true,a,b);
     a=std::max(a, store);
     if(store>largest){
         best_action=act;
