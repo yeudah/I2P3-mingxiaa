@@ -12,7 +12,7 @@
 
 int minmaxx(State* state, int depth, bool maximizingPlayer){
 
-    if (depth == 0||state->legal_actions.empty()||state->game_state==WIN||state->game_state==DRAW){
+    if (depth == 0||state->game_state==WIN||state->game_state==DRAW||state->legal_actions.empty()){
         if(state->score)return state->score;
         return state->evaluate();
     }
@@ -20,7 +20,7 @@ int minmaxx(State* state, int depth, bool maximizingPlayer){
         int value = INT_MIN;
         for (auto &it : state->legal_actions){
             State* next = state->next_state(it);
-            value = std::max(value,minmaxx(next, depth - 1, false) );
+            value = std::max(value,minmaxx(next, depth - 1, false));
         }
         return value;
     }
@@ -34,13 +34,7 @@ int minmaxx(State* state, int depth, bool maximizingPlayer){
         return value;
     }
 }
-/**
- * @brief Randomly get a legal action
- * 
- * @param state Now state
- * @param depth You may need this for other policy
- * @return Move 
- */
+
 Move MinMax::get_move(State *state, int depth){
 
   if(!state->legal_actions.size())

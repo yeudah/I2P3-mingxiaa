@@ -50,8 +50,8 @@ int board[30];
 #define FLIP(sq) ((sq)^25)
 #define OTHER(side) ((side)^ 1)
 
-int mg_value[6] = { 82, 337, 365, 477, 1025,  0};
-int eg_value[6] = { 94, 281, 297, 512,  936,  0};
+int mg_value[7] = { 0, 82, 337, 365, 477, 1025,  12000};
+int eg_value[7] = { 0, 94, 281, 297, 512,  936,  12000};
 
 /* piece/sq tables */
 /* values from Rofchade: http://www.talkchess.com/forum3/viewtopic.php?f=2&t=68311&start=19 */
@@ -151,9 +151,13 @@ int eg_king_table[30] = {
      -37,   3,  23,  16,  -2,
      -30,   9,  15,   6,  -4,
 };
+int mg_empty[30]={0};
+int eg_empty[30]={0};
 
-    int* mg_pesto_table[6] =
+
+    int* mg_pesto_table[7] =
 {
+    mg_empty,
     mg_pawn_table,
     mg_knight_table,
     mg_bishop_table,
@@ -162,8 +166,9 @@ int eg_king_table[30] = {
     mg_king_table,
 };
 
-int* eg_pesto_table[6] =
+int* eg_pesto_table[7] =
 {
+    eg_empty,
     eg_pawn_table,
     eg_knight_table,
     eg_bishop_table,
@@ -172,13 +177,27 @@ int* eg_pesto_table[6] =
     eg_king_table,
 };
 
-int gamephaseInc[12] = {0,0,1,1,1,1,2,2,4,4,0,0};
+int gamephaseInc[7] = {0,0,1,1,2,4,0};
 int mg_table[12][64];
 int eg_table[12][64];
 
 
-int eval()
+
+void State::init_tables()
 {
+    int pc, p, sq;
+    for (p = PAWN, pc = WHITE_PAWN; p <= KING; pc += 2, p++) {
+        for (sq = 0; sq < 64; sq++) {
+            mg_table[pc]  [sq] = mg_value[p] + mg_pesto_table[p][sq];
+            eg_table[pc]  [sq] = eg_value[p] + eg_pesto_table[p][sq];
+            mg_table[pc+1][sq] = mg_value[p] + mg_pesto_table[p][FLIP(sq)];
+            eg_table[pc+1][sq] = eg_value[p] + eg_pesto_table[p][FLIP(sq)];
+        }
+    }
+}
+int State::eval()
+{
+  init_tables();
     int mg[2];
     int eg[2];
     int gamePhase = 0;
@@ -189,22 +208,34 @@ int eval()
     eg[BLACK] = 0;
 
     /* evaluate each piece */
-    for (int sq = 0; sq < 30; ++sq) {
-        int pc = board[sq];
-        if (pc != EMPTY) {
-            mg[pc] += mg_table[pc][sq];
-            eg[pc] += eg_table[pc][sq];
-            gamePhase += gamephaseInc[pc];
-        }
+    for (int i = 0; i < BOARD_H; i++) {
+      for (int j = 0; j < BOARD_W; j++) {
+          int pc = this->board.board[this->player][i][j];
+          if (pc != EMPTY) {
+
+              mg[this->player] += mg_table[pc][i*BOARD_W+j];
+              eg[this->player] += eg_table[pc][i*BOARD_W+j];
+              gamePhase += gamephaseInc[pc];
+          }
+          int oppc = this->board.board[1-this->player][i][j];
+          if (oppc != EMPTY) {
+
+              mg[1-this->player] += mg_table[oppc][i*BOARD_W+j];
+              eg[1-this->player] += eg_table[oppc][i*BOARD_W+j];
+              gamePhase += gamephaseInc[oppc];
+          }
+      }
     }
 
     /* tapered eval */
-    int mgScore = mg[side2move] - mg[OTHER(side2move)];
-    int egScore = eg[side2move] - eg[OTHER(side2move)];
+    int mgScore = mg[this->player] - mg[1-this->player];
+    int egScore = eg[this->player] - eg[1-this->player];
     int mgPhase = gamePhase;
     if (mgPhase > 24) mgPhase = 24; /* in case of early promotion */
     int egPhase = 24 - mgPhase;
-    return (mgScore * mgPhase + egScore * egPhase) / 24;
+    int a=(mgScore * mgPhase + egScore * egPhase) / 24;
+    this->score=a;
+    return a;
 }
 
 

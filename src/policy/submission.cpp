@@ -5,14 +5,15 @@
 
 
 #include "../state/state.hpp"
-#include "./greedy.hpp"
+#include "./alphabet.hpp"
 
 //typedef std::pair<size_t, size_t> Point;
 //typedef std::pair<Point, Point> Move;
 
-int greedd(State* state, int depth, bool maximizingPlayer){
+int alphaa(State* state, int depth, bool maximizingPlayer, int a,int b){
 
-    if (depth == 0||state->legal_actions.empty()||state->game_state==WIN||state->game_state==DRAW){
+
+    if (depth == 0||state->game_state==WIN||state->game_state==DRAW||state->legal_actions.empty()){
         if(state->score)return state->score;
         return state->evaluate();
     }
@@ -20,7 +21,9 @@ int greedd(State* state, int depth, bool maximizingPlayer){
         int value = INT_MIN;
         for (auto &it : state->legal_actions){
             State* next = state->next_state(it);
-            value = std::max(value,greedd(next, depth - 1, false) );
+            value = std::max(value,alphaa(next, depth - 1, false, a,b) );
+            a=std::max(a,value);
+            if(a>=b)break;
         }
         return value;
     }
@@ -28,9 +31,10 @@ int greedd(State* state, int depth, bool maximizingPlayer){
         int value = INT_MAX;
         for (auto &it :state->legal_actions){
             State* next = state->next_state(it);
-            value = std::min(value,greedd(next, depth - 1, true));
+            value = std::min(value,alphaa(next, depth - 1, true,a,b));
+            b=std::min(b,value);
+            if(b<=a)break;
         }
-  
         return value;
     }
 }
@@ -41,16 +45,18 @@ int greedd(State* state, int depth, bool maximizingPlayer){
  * @param depth You may need this for other policy
  * @return Move 
  */
-Move Greed::get_move(State *state, int depth){
+Move Alpha::get_move(State *state, int depth){
 
   if(!state->legal_actions.size())
     state->get_legal_actions();
   Move best_action = state->legal_actions[0];
   int largest = INT_MIN, store;
+  int a=INT_MIN,b=INT_MAX;
 
   for(auto act:state->legal_actions){
     auto nextstate=state->next_state(act);
-    store=greedd(nextstate,depth,true);
+    store=alphaa(nextstate,depth,true,a,b);
+    a=std::max(a, store);
     if(store>largest){
         best_action=act;
         largest=store;

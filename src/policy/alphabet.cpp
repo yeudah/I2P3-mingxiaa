@@ -12,7 +12,8 @@
 
 int alphaa(State* state, int depth, bool maximizingPlayer, int a,int b){
 
-    if (depth == 0||state->legal_actions.empty()||state->game_state==WIN||state->game_state==DRAW){
+
+    if (depth == 0||state->game_state==WIN||state->game_state==DRAW||state->legal_actions.empty()){
         if(state->score)return state->score;
         return state->evaluate();
     }

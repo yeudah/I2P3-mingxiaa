@@ -41,17 +41,14 @@ void read_board(std::ifstream& fin) {
  * @param fout 
  */
 void write_valid_spot(std::ofstream& fout) {
-
- while(true){
-    auto move = MinMax::get_move(root, 4);
+  int depth=2;
+  while(true) {
+    auto move = MinMax::get_move(root, depth);
     fout << move.first.first << " " << move.first.second << " "\
-         << move.second.first << " " << move.second.second ;//<< std::endl;
-    
+         << move.second.first << " " << move.second.second << std::endl;
+    depth+=1;
     fout.flush();
-   
-    break;
- }
-  
+  }
 
 }
 

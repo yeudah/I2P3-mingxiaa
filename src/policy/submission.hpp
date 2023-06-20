@@ -8,8 +8,8 @@
  * your policy class should have get_move method
  */
 
-class Greed{
+class Alpha{
 public:
   static Move get_move(State *state, int depth);
-  friend int greedd(State *state, int depth, bool maximizingPlayer);
+  friend int alphaa(State *state, int depth, bool maximizingPlayer,int a,int b);
 };
