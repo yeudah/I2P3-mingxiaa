@@ -10,3 +10,23 @@ Processing '/etc/joe/editorrc'...
 Processing '/etc/joe/ftyperc'...
 Finished processing /etc/joe/ftyperc
 Finished processing /etc/joe/editorrc
+
+*** These modified files were found in JOE when it aborted on Tue Jun 20 16:02:38 2023
+*** JOE was aborted by UNIX signal 1
+
+*** File '(Unnamed)'
+/home/proj10/I2P3-mingxiaa/.git/MERGE_MSG
+
+*** File '/home/proj10/I2P3-mingxiaa/.git/MERGE_MSG'
+sdsMerge remote-tracking branch 'origin'
+# Please enter a commit message to explain why this merge is necessary,
+# especially if it merges an updated upstream into a topic branch.
+#
+# Lines starting with '#' will be ignored, and an empty message aborts
+# the commit.
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc

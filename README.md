@@ -1,1 +1,3 @@
 NTHU I2P3   MiniChess AI
+
+黃明霞110006311
