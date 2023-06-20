@@ -38,7 +38,7 @@ class Board{
       {0, 0, 0, 0, 0},
     }};
 };
-
+      
 enum GameState {
   UNKNOWN = 0,
   WIN,

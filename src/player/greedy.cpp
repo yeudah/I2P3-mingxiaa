@@ -3,7 +3,7 @@
 
 #include "../config.hpp"
 #include "../state/state.hpp"
-#include "../policy/minmax.hpp"
+#include "../policy/greedy.hpp"
 
 
 State* root;
@@ -43,7 +43,7 @@ void read_board(std::ifstream& fin) {
 void write_valid_spot(std::ofstream& fout) {
 
  while(true){
-    auto move = MinMax::get_move(root, 4);
+    auto move = Greed::get_move(root, 0);
     fout << move.first.first << " " << move.first.second << " "\
          << move.second.first << " " << move.second.second ;//<< std::endl;
     

@@ -17,6 +17,196 @@
 
 #include "./state.hpp"
 #include "../config.hpp"
+#define PAWN   0
+#define KNIGHT 1
+#define BISHOP 2
+#define ROOK   3
+#define QUEEN  4
+#define KING   5
+
+/* board representation */
+#define WHITE  0
+#define BLACK  1
+
+#define WHITE_PAWN      (2*PAWN   + WHITE)
+#define BLACK_PAWN      (2*PAWN   + BLACK)
+#define WHITE_KNIGHT    (2*KNIGHT + WHITE)
+#define BLACK_KNIGHT    (2*KNIGHT + BLACK)
+#define WHITE_BISHOP    (2*BISHOP + WHITE)
+#define BLACK_BISHOP    (2*BISHOP + BLACK)
+#define WHITE_ROOK      (2*ROOK   + WHITE)
+#define BLACK_ROOK      (2*ROOK   + BLACK)
+#define WHITE_QUEEN     (2*QUEEN  + WHITE)
+#define BLACK_QUEEN     (2*QUEEN  + BLACK)
+#define WHITE_KING      (2*KING   + WHITE)
+#define BLACK_KING      (2*KING   + BLACK)
+#define EMPTY           (BLACK_KING  +  1)
+
+#define PCOLOR(p) ((p)&1)
+
+int side2move;
+int board[30];
+
+#define FLIP(sq) ((sq)^25)
+#define OTHER(side) ((side)^ 1)
+
+int mg_value[6] = { 82, 337, 365, 477, 1025,  0};
+int eg_value[6] = { 94, 281, 297, 512,  936,  0};
+
+/* piece/sq tables */
+/* values from Rofchade: http://www.talkchess.com/forum3/viewtopic.php?f=2&t=68311&start=19 */
+
+
+int mg_pawn_table[30] = {
+      0,   0,   0,   0,   0,
+     98, 134,  61,  95,  68,
+     -6,   7,  26,  31,  65,
+    -14,  13,   6,  21,  23,
+    -27,  -2,  -5,  12,  17,
+};
+
+int eg_pawn_table[30] = {
+      0,   0,   0,   0,   0,
+    178, 173, 158, 134, 147,
+     94, 100,  85,  67,  56,
+     32,  24,  13,   5,  -2,
+     13,   9,  -3,  -7,  -7,
+};
+int mg_knight_table[30] = {
+    -167, -89, -34, -49,  61,
+     -73, -41,  72,  36,  23,
+     -47,  60,  37,  65,  84,
+      -9,  17,  19,  53,  37,
+     -13,   4,  16,  13,  28,
+};
+
+int eg_knight_table[30] = {
+    -58, -38, -13, -28, -31,
+    -25,  -8, -25, -26, -25,
+    -24, -20,  10,   9,  -1,
+    -17,   3,  22,  22,  11,
+    -11,  10,  22,  15,   4,
+};
+
+int mg_bishop_table[30] = {
+    -29,   4, -82, -37, -25,
+     -3,  16,  22,  15,  15,
+    -13,   0,  18,   8,  29,
+    -15,  -2,   4,  17,  17,
+     -5,  19,  17,  25,  32,
+};
+
+int eg_bishop_table[30] = {
+    -23, -12, -14, -11, -2,
+    -10,  -8,  -4,  -7,  3,
+     -3,   7,  -6,   1,   2,
+     -1,  -2,   8,  -2,   4,
+     -3,   1,   6,  -2,   0,
+};
+
+int mg_rook_table[30] = {
+      32,  42,  32,  51, 63,
+      27,  32,  58,  62, 80,
+      -5,  19,  26,  36, 17,
+      -5,  13,  10,  25, 37,
+     -26,  -9,   5,  15, 13,
+};
+
+int eg_rook_table[30] = {
+       13,  10,  18,  15, 12,
+       11,  13,  13,  11,  7,
+        7,   7,   7,   5,  4,
+        5,   3,   3,  -1, -2,
+       -4,   0,  -5,  -7, -12,
+};
+
+int mg_queen_table[30] = {
+     -63, -52, -58, -43, -36,
+     -52, -39, -32, -27, -43,
+     -40, -31, -28, -32, -29,
+     -36, -26, -32, -28, -25,
+     -32, -21, -23, -15, -14,
+};
+
+int eg_queen_table[30] = {
+     -57, -40, -41, -28, -16,
+     -53, -45, -32, -25, -23,
+     -32, -27, -15,  -5,  -2,
+     -29, -25,  -9,  -4,   3,
+     -26, -16,   0,   1,   6,
+};
+
+int mg_king_table[30] = {
+      -9,  24,  10, -24, -42,
+       5,  29,  21, -8, -22,
+     -17,  11,   4, -13, -17,
+     -26,   3,  -6, -23, -24,
+     -22,  -5, -10, -21, -34,
+};
+
+int eg_king_table[30] = {
+     -65, -19,  18,  -1, -19,
+     -56,   6,  16,  15, -14,
+     -46,  13,  29,  10,   1,
+     -37,   3,  23,  16,  -2,
+     -30,   9,  15,   6,  -4,
+};
+
+    int* mg_pesto_table[6] =
+{
+    mg_pawn_table,
+    mg_knight_table,
+    mg_bishop_table,
+    mg_rook_table,
+    mg_queen_table,
+    mg_king_table,
+};
+
+int* eg_pesto_table[6] =
+{
+    eg_pawn_table,
+    eg_knight_table,
+    eg_bishop_table,
+    eg_rook_table,
+    eg_queen_table,
+    eg_king_table,
+};
+
+int gamephaseInc[12] = {0,0,1,1,1,1,2,2,4,4,0,0};
+int mg_table[12][64];
+int eg_table[12][64];
+
+
+int eval()
+{
+    int mg[2];
+    int eg[2];
+    int gamePhase = 0;
+
+    mg[WHITE] = 0;
+    mg[BLACK] = 0;
+    eg[WHITE] = 0;
+    eg[BLACK] = 0;
+
+    /* evaluate each piece */
+    for (int sq = 0; sq < 30; ++sq) {
+        int pc = board[sq];
+        if (pc != EMPTY) {
+            mg[pc] += mg_table[pc][sq];
+            eg[pc] += eg_table[pc][sq];
+            gamePhase += gamephaseInc[pc];
+        }
+    }
+
+    /* tapered eval */
+    int mgScore = mg[side2move] - mg[OTHER(side2move)];
+    int egScore = eg[side2move] - eg[OTHER(side2move)];
+    int mgPhase = gamePhase;
+    if (mgPhase > 24) mgPhase = 24; /* in case of early promotion */
+    int egPhase = 24 - mgPhase;
+    return (mgScore * mgPhase + egScore * egPhase) / 24;
+}
+
 
 
 /**
@@ -24,6 +214,7 @@
  * 
  * @return int 
  */
+
 int State::evaluate(){
   int scores[7] = {0, 2, 6, 7, 8, 20, 100};  // Scores for pieces: pawn, rook, bishop, knight, queen, king
 
